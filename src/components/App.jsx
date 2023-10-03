@@ -1,17 +1,16 @@
 // import axios from 'axios';
 import { requestHits } from 'services/api';
 import { Component } from 'react';
+import { LoadMore } from './Button/Button';
+import { Modal } from './Modal/Modal';
+import { Searchbar } from './Searchbar/Searchbar';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Loader } from './Loader/Loader';
 // import { toast } from 'react-toastify';
-// import Loader from 'react-loader-spinner'; // Импортируем компонент спиннера
-// import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'; // Подключаем стили спиннера
-
-// id - унікальний ідентифікатор
-// webformatURL - посилання на маленьке зображення для списку карток
-// largeImageURL
-
+// import Loader from 'react-loader-spinner';
+// import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 export class App extends Component {
   state = {
-    filter: '',
     modal: {
       isOpen: false,
       isClosed: true,
@@ -19,6 +18,8 @@ export class App extends Component {
     hits: [],
     isLoading: false,
     error: null,
+    tags: '',
+    page: 1,
   };
 
   fetchHits = async () => {
@@ -26,6 +27,7 @@ export class App extends Component {
       this.setState({ isLoading: true });
       const hits = await requestHits();
       console.log(hits);
+      this.setState({ hits: hits });
     } catch (error) {
       this.setState({ error: error.message });
     } finally {
@@ -33,13 +35,67 @@ export class App extends Component {
     }
   };
 
+  // fetchHits = async () => {
+  //   try {
+  //     this.setState({ isLoading: true });
+  //     const hits = await requestHits();
+  //     console.log(hits);
+  //     this.setState({ hits: hits });
+  //   } catch (error) {
+  //     this.setState({ error: error.message });
+  //   } finally {
+  //     this.setState({ isLoading: false });
+  //   }
+  // };
+
   componentDidMount() {
     this.fetchHits();
   }
 
-  onFilterChange = event => {
-    const inputValue = event.target.value;
-    this.setState({ filter: inputValue });
+  handleSubmit = data => {
+    if (data === this.state.tags) {
+      this.setState({ tags: data });
+    }
   };
-  // render()
+
+  handleLoadMore = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }), this.fetchHits);
+  };
+
+  onOpenModal = modalData => {
+    this.setState({
+      modal: {
+        isOpen: true,
+        modalData: modalData,
+      },
+    });
+  };
+
+  onCloseModal = () => {
+    this.setState({
+      modal: {
+        isOpen: false,
+        modalData: null,
+      },
+    });
+  };
+
+  render() {
+    return (
+      <>
+        <Searchbar
+          onInputChange={this.onInputChange}
+          onSubmit={this.handleSubmit}
+        />
+        <ImageGallery hits={this.state.hits} />
+        <Loader />
+        <LoadMore onClick={this.handleLoadMore} />
+        <Modal
+          isOpen={this.state.modal.isOpen}
+          modalData={this.state.modal.modalData}
+          onCloseModal={this.onCloseModal}
+        />
+      </>
+    );
+  }
 }

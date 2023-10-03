@@ -21,4 +21,3 @@ export const requestHits = async (query = "cat", page = 1) => {
     return data;
 }
 
-console.log(requestHits);

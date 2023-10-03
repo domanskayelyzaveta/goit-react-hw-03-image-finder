@@ -1,17 +1,20 @@
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
-export const ImageGallery = ({ arr }) => {
+export const ImageGallery = ({ hits }) => {
+  // if (!Array.isArray(hits) || hits.length === 0) {
+  //   return null;
+  // }
+
   return (
     <ul className="gallery">
-      {arr.map(({ id, webformatURL, tags }) => (
+      {hits.map(image => (
         <ImageGalleryItem
-          key={id} 
-          id={id}
-          webformatURL={webformatURL}
-          tags={tags}
+          key={image.id}
+          id={image.id}
+          webformatURL={image.webformatURL}
+          tags={image.tags}
         />
-      )}
+      ))}
     </ul>
   );
 };

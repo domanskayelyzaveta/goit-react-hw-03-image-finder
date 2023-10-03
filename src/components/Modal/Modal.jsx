@@ -4,10 +4,10 @@
 // Зовнішній вигляд схожий на функціонал цього VanillaJS - плагіна, тільки замість білого модального вікна рендериться зображення
 // (у прикладі натисніть Run).Анімацію робити не потрібно!
 
-{
-  /* <div class="overlay">
-  <div class="modal">
-    <img src="" alt="" />
-  </div>
-</div>; */
-}
+export const Modal = () => {
+  <div class="overlay">
+    <div class="modal">
+      <img src="" alt="" />
+    </div>
+  </div>;
+};
