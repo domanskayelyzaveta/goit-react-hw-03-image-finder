@@ -5,8 +5,8 @@
 // (у прикладі натисніть Run).Анімацію робити не потрібно!
 
 export const Modal = () => {
-  <div class="overlay">
-    <div class="modal">
+  <div class="Overlay">
+    <div className="Modal">
       <img src="" alt="" />
     </div>
   </div>;

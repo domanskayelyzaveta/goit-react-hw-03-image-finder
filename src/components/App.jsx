@@ -39,8 +39,11 @@ export class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.query !== this.state.query) {
-      this.fetchHits();
+    if (
+      prevState.query !== this.state.query ||
+      prevState.page !== this.state.page
+    ) {
+      this.fetchHits(this.state.query, this.state.page);
     }
   }
 
@@ -49,7 +52,7 @@ export class App extends Component {
   };
 
   handleLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }), this.fetchHits);
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   onOpenModal = modalData => {
@@ -80,7 +83,7 @@ export class App extends Component {
         <ToastContainer autoClose={4000} />
         <ImageGallery hits={this.state.hits} />
         <Loader />
-        <LoadMore onClick={this.handleLoadMore} />
+        <LoadMore handleLoadMore={this.handleLoadMore} />
         <Modal
           isOpen={this.state.modal.isOpen}
           modalData={this.state.modal.modalData}

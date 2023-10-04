@@ -2,7 +2,7 @@ import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
 export const ImageGallery = ({ hits }) => {
   return (
-    <ul className="gallery">
+    <ul className="ImageGallery">
       {hits.map(image => (
         <ImageGalleryItem
           key={image.id}
