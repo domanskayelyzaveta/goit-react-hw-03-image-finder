@@ -1,21 +1,24 @@
 import { Component } from 'react';
+import { toast } from 'react-toastify';
 
 export class Searchbar extends Component {
   state = {
-    query: '',
+    tags: '',
   };
 
   onInputChange = event => {
-    const inputValue = event.target.value;
-    this.setState({ query: inputValue });
+    const inputValue = event.target.value.toLowerCase();
+    this.setState({ tags: inputValue });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    if (!this.state.query.trim()) {
+    this.props.onSubmit(this.state.tags);
+    if (!this.state.tags.trim() === '') {
+      toast.error('Введіть щось у поле');
       return;
     }
-    this.setState({ query: '' });
+    this.setState({ tags: '' });
   };
 
   render() {
@@ -32,7 +35,7 @@ export class Searchbar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            value={this.state.query}
+            value={this.state.tags}
             onChange={this.onInputChange}
           />
         </form>

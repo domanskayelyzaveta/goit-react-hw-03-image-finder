@@ -6,6 +6,8 @@ import { Modal } from './Modal/Modal';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
+import { ToastContainer } from 'react-toastify';
+
 // import { toast } from 'react-toastify';
 // import Loader from 'react-loader-spinner';
 // import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
@@ -20,14 +22,15 @@ export class App extends Component {
     error: null,
     tags: '',
     page: 1,
+    query: '',
   };
 
   fetchHits = async () => {
     try {
       this.setState({ isLoading: true });
-      const hits = await requestHits();
-      console.log(hits);
-      this.setState({ hits: hits });
+      const response = await requestHits(this.state.query, this.state.page);
+      console.log(response);
+      this.setState({ hits: response.hits });
     } catch (error) {
       this.setState({ error: error.message });
     } finally {
@@ -35,27 +38,14 @@ export class App extends Component {
     }
   };
 
-  // fetchHits = async () => {
-  //   try {
-  //     this.setState({ isLoading: true });
-  //     const hits = await requestHits();
-  //     console.log(hits);
-  //     this.setState({ hits: hits });
-  //   } catch (error) {
-  //     this.setState({ error: error.message });
-  //   } finally {
-  //     this.setState({ isLoading: false });
-  //   }
-  // };
-
-  componentDidMount() {
-    this.fetchHits();
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.query !== this.state.query) {
+      this.fetchHits();
+    }
   }
 
-  handleSubmit = data => {
-    if (data === this.state.tags) {
-      this.setState({ tags: data });
-    }
+  handleSubmit = tags => {
+    this.setState({ query: tags, page: 1 });
   };
 
   handleLoadMore = () => {
@@ -87,6 +77,7 @@ export class App extends Component {
           onInputChange={this.onInputChange}
           onSubmit={this.handleSubmit}
         />
+        <ToastContainer autoClose={4000} />
         <ImageGallery hits={this.state.hits} />
         <Loader />
         <LoadMore onClick={this.handleLoadMore} />
