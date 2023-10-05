@@ -1,8 +1,18 @@
-export const ImageGalleryItem = ({ id, webformatURL, tags }) => {
+export const ImageGalleryItem = ({
+  webformatURL,
+  largeImageURL,
+  tags,
+  onOpenModal,
+  id,
+}) => {
   return (
-    <li className="ImageGalleryItem">
-      <p>id:{id}</p>
-      <img src={webformatURL} alt={tags} className="ImageGalleryItem-image" />
+    <li key={id} className="ImageGalleryItem">
+      <img
+        src={webformatURL}
+        alt={tags}
+        className="ImageGalleryItem-image"
+        onClick={() => onOpenModal(largeImageURL)}
+      />
     </li>
   );
 };

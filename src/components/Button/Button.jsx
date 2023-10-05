@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-export const LoadMore = ({ handleLoadMore }) => (
-  <button type="button" onClick={handleLoadMore} className="Button">
-    Load more
-  </button>
-);
+export class LoadMore extends Component {
+  render() {
+    const { showLoadMore, handleLoadMore } = this.props;
+
+    return (
+      <div>
+        {showLoadMore && (
+          <button onClick={handleLoadMore} className="Button">
+            Load More
+          </button>
+        )}
+      </div>
+    );
+  }
+}

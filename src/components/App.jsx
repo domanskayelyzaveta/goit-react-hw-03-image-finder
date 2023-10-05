@@ -1,21 +1,18 @@
 // import axios from 'axios';
-import { requestHits } from 'services/api';
 import { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { requestHits } from 'services/api';
+import { Loader } from './Loader/Loader';
 import { LoadMore } from './Button/Button';
-import { Modal } from './Modal/Modal';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { Loader } from './Loader/Loader';
-import { ToastContainer } from 'react-toastify';
+import { Modal } from './Modal/Modal';
 
-// import { toast } from 'react-toastify';
-// import Loader from 'react-loader-spinner';
-// import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 export class App extends Component {
   state = {
     modal: {
       isOpen: false,
-      isClosed: true,
+      modalData: null,
     },
     hits: [],
     isLoading: false,
@@ -23,14 +20,25 @@ export class App extends Component {
     tags: '',
     page: 1,
     query: '',
+    showLoadMore: false,
   };
 
   fetchHits = async () => {
     try {
       this.setState({ isLoading: true });
       const response = await requestHits(this.state.query, this.state.page);
-      console.log(response);
-      this.setState({ hits: response.hits });
+
+      if (this.state.page === 1) {
+        this.setState({
+          hits: response.hits,
+          showLoadMore: true,
+        });
+      } else {
+        this.setState({
+          hits: [...this.state.hits, ...response.hits],
+          showLoadMore: true,
+        });
+      }
     } catch (error) {
       this.setState({ error: error.message });
     } finally {
@@ -43,7 +51,7 @@ export class App extends Component {
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
-      this.fetchHits(this.state.query, this.state.page);
+      this.fetchHits();
     }
   }
 
@@ -52,7 +60,9 @@ export class App extends Component {
   };
 
   handleLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   };
 
   onOpenModal = modalData => {
@@ -81,13 +91,16 @@ export class App extends Component {
           onSubmit={this.handleSubmit}
         />
         <ToastContainer autoClose={4000} />
-        <ImageGallery hits={this.state.hits} />
-        <Loader />
-        <LoadMore handleLoadMore={this.handleLoadMore} />
+        <ImageGallery hits={this.state.hits} onOpenModal={this.onOpenModal} />
+        <Loader loading={this.state.isLoading} error={this.state.error} />
+        <LoadMore
+          handleLoadMore={this.handleLoadMore}
+          showLoadMore={this.state.showLoadMore}
+        />
         <Modal
-          isOpen={this.state.modal.isOpen}
-          modalData={this.state.modal.modalData}
           onCloseModal={this.onCloseModal}
+          data={this.state.modal.modalData}
+          isOpen={this.state.modal.isOpen}
         />
       </>
     );
